@@ -41,6 +41,18 @@ const employeeSchema = new mongoose.Schema(
       },
     ],
 
+        currentJob: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Booking",
+      default: null,
+    },
+
+    workStatus: {
+      type: String,
+      enum: ["idle", "busy"],
+      default: "idle",
+    },
+
     isActive: {
       type: Boolean,
       default: true,

@@ -18,6 +18,7 @@ exports.registerCustomer = async (req, res) => {
 
     // 2. Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
+    console.log(hashedPassword)
 
     // 3. Create User
     const user = await User.create({
@@ -65,8 +66,11 @@ exports.loginUser = async (req, res) => {
     // 2. Compare password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
+          console.log("COMPARE RESULT:", await bcrypt.compare(password, user.password));
+
       return res.status(400).json({ message: "Invalid credentials" });
     }
+
 
     // 3. Create token
     const token = jwt.sign(
@@ -90,4 +94,25 @@ exports.loginUser = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+};
+
+exports.debugLoginTest = async () => {
+  const User = require("../models/User");
+  const bcrypt = require("bcryptjs");
+
+  const email = "admin@example.com";
+  const password = "admin123";
+
+  const user = await User.findOne({ email });
+
+  console.log("USER FOUND:", user);
+  console.log("INPUT PASSWORD:", password);
+  console.log("DB HASH:", user?.password);
+
+  if (user) {
+    const match = await bcrypt.compare(password, user.password);
+    console.log("PASSWORD MATCH:", match);
+  }
+
+  return;
 };
